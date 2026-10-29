@@ -141,4 +141,4 @@ canvas_html = f"""
 """
 
 # Render dynamic compiled html module safely inside framework window screen workspace
-st.components.vhtml(canvas_html, height=450)
+st.components.v1.html(canvas_html, height=450)
