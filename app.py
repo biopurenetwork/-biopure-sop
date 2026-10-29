@@ -11,7 +11,7 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-st.title("🧪 BIOPURE S.A. — SOP Process Validation Tool")
+st.title("🧪 BIOPURE — SOP Process Validation Tool")
 st.caption("Windows 64-Bit Simulation Environment Core / Native CODESYS V3.5 SP20 Logic")
 
 st.markdown("""
