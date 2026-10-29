@@ -72,7 +72,7 @@ else:
     jacket_status = "Cooling Range"
 
 pipe_color = "#3498db" if valve_open else "#2c3e50"
-blade_class = "spinning-blade" if valve_open else "idle-blade"
+blade_class = "spinning-propeller" if valve_open else "idle-propeller"
 cooling_flow_str = "1.8 mL/m" if temp > target_pct else "0.0 mL/m"
 
 # Render Layout splitting text sections from formatting variables safely
@@ -80,17 +80,19 @@ canvas_html = f"""
 <div style="background-color: #0b132b; border-radius: 12px; padding: 24px; color: #ffffff; font-family: monospace; max-width: 700px; margin: 0 auto; box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
     
     <style>
-        @keyframes rotate-prop-loop {{
-            0% {{ transform: rotate(0deg); }}
-            100% {{ transform: rotate(360deg); }}
+        @keyframes industrial-spin {{
+            0% {{ transform: scaleX(1); opacity: 1; }}
+            25% {{ transform: scaleX(0.1); opacity: 0.8; }}
+            50% {{ transform: scaleX(-1); opacity: 1; }}
+            75% {{ transform: scaleX(-0.1); opacity: 0.8; }}
+            100% {{ transform: scaleX(1); opacity: 1; }}
         }}
-        .spinning-blade {{
-            animation: rotate-prop-loop 1s linear infinite;
+        .spinning-propeller {{
+            animation: industrial-spin 1.2s linear infinite;
             transform-origin: 300px 240px;
         }}
-        .idle-blade {{
+        .idle-propeller {{
             transform-origin: 300px 240px;
-            transform: rotate(0deg);
         }}
     </style>
 
@@ -114,11 +116,16 @@ canvas_html = f"""
             <rect x="200" y="{fluid_y_axis}" width="200" height="300" fill="url(#fluid-grad)" opacity="0.85" />
         </svg>
 
-        <line x1="300" y1="90" x2="300" y2="240" stroke="#95a5a6" stroke-width="6" stroke-linecap="round" />
+        <!-- INDUSTRIAL VERTICAL SHAFT AND ANCHOR-PADDLE AGITATOR DESIGN -->
+        <line x1="300" y1="90" x2="300" y2="235" stroke="#95a5a6" stroke-width="6" stroke-linecap="round" />
 
         <g class="{blade_class}">
-            <ellipse cx="300" cy="240" rx="60" ry="12" fill="#7f8c8d" stroke="#ecf0f1" stroke-width="1.5" />
-            <line x1="240" y1="240" x2="360" y2="240" stroke="#ffffff" stroke-width="2" opacity="0.5" />
+            <!-- Crossbar support hub -->
+            <rect x="250" y="232" width="100" height="8" rx="2" fill="#7f8c8d" stroke="#bdc3c7" stroke-width="1" />
+            <!-- Left Paddle Blade -->
+            <path d="M 250 215 L 258 215 L 258 245 L 250 245 Z" fill="#7f8c8d" stroke="#ffffff" stroke-width="1" />
+            <!-- Right Paddle Blade -->
+            <path d="M 342 215 L 350 215 L 350 245 L 342 245 Z" fill="#7f8c8d" stroke="#ffffff" stroke-width="1" />
         </g>
 
         <g transform="translate(420, 110)">
