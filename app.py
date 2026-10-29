@@ -11,7 +11,7 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-st.title("🧪 BIOPURE. — SOP Process Validation Tool")
+st.title("🧪 BIOPURE  — SOP Process Validation Tool")
 st.caption("Windows 64-Bit Simulation Environment Core / Native CODESYS V3.5 SP20 Logic")
 
 st.markdown("""
@@ -60,8 +60,18 @@ valve_open = needed_et_kg > 0.0 and (temp_safe or "Batch Phase" in stage)
 # Calculate parameters for high resolution SVG level tracking maps
 fluid_y_axis = min(260, max(100, 260 - int((weight / 5000.0) * 160)))
 dosing_flow = f"{needed_et_kg/60.0:.2f} mL/m" if valve_open else "0.00 mL/m"
-jacket_color = "#e74c3c" if temp > 20 else ("#2ecc71" if temp safe if temp_safe else "#3498db")
-jacket_status = "Heating Range" if temp > 20 else ("Cooling Range" if temp < 0 else "Optimal Range")
+
+# FIXED SYNTAX LOGIC HERE:
+if temp > 20:
+    jacket_color = "#e74c3c"
+    jacket_status = "Heating Range"
+elif temp_safe:
+    jacket_color = "#2ecc71"
+    jacket_status = "Optimal Range"
+else:
+    jacket_color = "#3498db"
+    jacket_status = "Cooling Range"
+
 pipe_color = "#3498db" if valve_open else "#2c3e50"
 
 # SVG Vector Graphic Blueprint Layout Core
@@ -156,6 +166,3 @@ svg_layout = f"""
         </div>
     </div>
 </div>
-"""
-
-st.components.v1.html(svg_layout, height=480)
