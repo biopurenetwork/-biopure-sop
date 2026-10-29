@@ -1,17 +1,23 @@
 import streamlit as st
-import time
 
 st.set_page_config(page_title="Biopure Process Validation", layout="wide")
 
-# App Header
-st.title("🧪 BIOPURE — SOP Process Validation Tool")
+# Custom injection styling to clean up Streamlit's default card spacing
+st.markdown("""
+    <style>
+    .block-container { padding-top: 1.5rem; padding-bottom: 1.5rem; }
+    h1, h3, p, span { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important; }
+    div[data-testid="stSlider"] { margin-bottom: -10px; }
+    </style>
+""", unsafe_allow_html=True)
+
+st.title("🧪 BIOPURE. — SOP Process Validation Tool")
 st.caption("Windows 64-Bit Simulation Environment Core / Native CODESYS V3.5 SP20 Logic")
 
 st.markdown("""
-<p>To help you simulate and test these calculations directly inside your Windows 64-bit environment without being connected to live plant hardware, you can use this simulation module to verify how changing target weights or assay percentages impacts your loop valve output.</p>
+<p style="color: #555; font-size: 14px;">To help you simulate and test these calculations directly inside your Windows 64-bit environment without being connected to live plant hardware, you can use this simulation module to verify how changing target weights or assay percentages impacts your loop valve output.</p>
 """, unsafe_allow_html=True)
 
-# User Controls Panels
 st.subheader("SOP Operator Stage Target Selection")
 stage = st.selectbox(
     "Select Active Fractionation Stage", 
@@ -51,56 +57,91 @@ else:
 
 valve_open = needed_et_kg > 0.0 and (temp_safe or "Batch Phase" in stage)
 
-# Calculate parameters for visual rendering display
-fluid_height = min(220, max(20, int((weight / 5000.0) * 200) + 20))
+# Calculate parameters for high resolution SVG level tracking maps
+fluid_y_axis = min(260, max(100, 260 - int((weight / 5000.0) * 160)))
 dosing_flow = f"{needed_et_kg/60.0:.2f} mL/m" if valve_open else "0.00 mL/m"
-jacket_color = "#e74c3c" if temp > 20 else ("#3498db" if temp < 0 else "#2ecc71")
+jacket_color = "#e74c3c" if temp > 20 else ("#2ecc71" if temp safe if temp_safe else "#3498db")
 jacket_status = "Heating Range" if temp > 20 else ("Cooling Range" if temp < 0 else "Optimal Range")
+pipe_color = "#3498db" if valve_open else "#2c3e50"
 
-# Core Schematic Generation Script Layout using Embedded HTML Canvas Elements
-canvas_html = f"""
-<div style="background-color: #0b132b; border-radius: 12px; padding: 24px; color: #ffffff; font-family: monospace; display: flex; flex-direction: column; align-items: center; box-shadow: 0 8px 16px rgba(0,0,0,0.3); max-width: 700px; margin: 0 auto;">
+# SVG Vector Graphic Blueprint Layout Core
+svg_layout = f"""
+<div style="background-color: #0b132b; border-radius: 12px; padding: 24px; color: #ffffff; font-family: monospace; max-width: 700px; margin: 0 auto; box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
+    
+    <!-- Title Status Bar Row -->
     <div style="width: 100%; display: flex; justify-content: space-between; margin-bottom: 12px; border-bottom: 1px solid #1c2541; padding-bottom: 8px;">
-        <span style="color: #5bc0be; font-weight: bold;">SOP: Run Mode</span>
+        <span style="color: #5bc0be; font-weight: bold; font-family: sans-serif;">SOP: Run Mode</span>
         <span style="background-color: #1c2541; padding: 2px 8px; border-radius: 4px; font-size: 11px;">⏸ II</span>
     </div>
-    
-    <div style="position: relative; width: 550px; height: 350px; margin-top: 15px;">
-        <!-- Dosing Loop Pipeline Stream Graphics -->
-        <div style="position: absolute; top: 80px; left: 10px; width: 140px; height: 6px; background-color: {('#3498db' if valve_open else '#1c2541')}; z-index: 1;"></div>
-        <div style="position: absolute; top: 86px; left: 144px; width: 6px; height: 34px; background-color: {('#3498db' if valve_open else '#1c2541')}; z-index: 1;"></div>
+
+    <!-- Perfect Precision Vectors Drawing canvas wrapper -->
+    <svg viewBox="0 0 600 380" width="100%" height="100%" xmlns="http://w3.org">
+        <style>
+            @keyframes rotate-prop {{
+                0% {{ transform: rotate(0deg); }}
+                100% {{ transform: rotate(360deg); }}
+            }}
+            .spinning-blade {{
+                animation: rotate-prop 1s linear infinite;
+                transform-origin: 300px 240px;
+            }}
+        </style>
+
+        <!-- 1. HIGH-RES INTAKE PIPE VECTOR LOOP -->
+        <path d="M 40 100 L 260 100 L 260 120" fill="none" stroke="{pipe_color}" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" />
         
-        <!-- Text labels metrics displays on canvas layout -->
-        <div style="position: absolute; top: 40px; left: 20px; font-size: 12px;">
-            <div style="color: #8b9bb4; font-size: 10px;">DOSING RECONCILE LOOP</div>
-            <div style="color: #ffffff; font-weight: bold;">{dosing_flow}</div>
-        </div>
+        <!-- Live flow metrics labels overlays -->
+        <text x="40" y="65" fill="#8b9bb4" font-size="10" font-family="sans-serif">CODESYS CASCADE LOOP</text>
+        <text x="40" y="85" fill="#ffffff" font-size="15" font-weight="bold" font-family="sans-serif">{dosing_flow}</text>
 
-        <div style="position: absolute; top: 120px; right: 40px; font-size: 12px; background: rgba(28,37,65,0.6); padding: 8px; border-radius: 6px; border-left: 4px solid {jacket_color};">
-            <div style="color: #8b9bb4; font-size: 10px;">THERMAL JACKET</div>
-            <div style="color: #ffffff; font-weight: bold; font-size: 14px;">{temp:.1f} °C</div>
-            <div style="color: {jacket_color}; font-size: 11px;">● {jacket_status}</div>
-        </div>
+        <!-- 2. REACTOR THERMAL JACKET GRAPHIC SHELL -->
+        <rect x="190" y="110" width="220" height="190" rx="30" ry="30" fill="none" stroke="{jacket_color}" stroke-width="12" opacity="0.3" />
+        <rect x="190" y="110" width="220" height="190" rx="30" ry="30" fill="none" stroke="{jacket_color}" stroke-width="3" />
 
-        <!-- Reactor Vessel Layout Outline Assembly -->
-        <div style="position: absolute; top: 100px; left: 180px; width: 180px; height: 220px; border-radius: 20px 20px 40px 40px; border: 4px solid {jacket_color}; background-color: #0b132b; box-shadow: 0 0 15px {jacket_color}44; z-index: 2; overflow: hidden;">
-            <!-- Process Fluid Height Tracking Level Display Container -->
-            <div style="position: absolute; bottom: 0; left: 0; right: 0; height: {fluid_height}px; background: linear-gradient(to top, #116979, #1aa6b7); opacity: 0.85; transition: height 0.3s ease;"></div>
+        <!-- 3. INNER REACTOR LIQUID VESSEL TANK BLOCK -->
+        <g id="reactor-core">
+            <rect x="200" y="120" width="200" height="170" rx="20" ry="20" fill="#0b132b" stroke="#34495e" stroke-width="2" />
             
-            <!-- Center Motor Mixing Shaft Element Overlay -->
-            <div style="position: absolute; top: 0; left: 87px; width: 6px; height: 160px; background-color: #bdc3c7;"></div>
-            
-            <!-- Custom CSS Continuous Mechanical Spinning Impeller Rotor Blades Component -->
-            <div id="blade" style="position: absolute; top: 155px; left: 43px; width: 94px; height: 14px; background-color: #ecf0f1; border-radius: 4px; transform-origin: center;"></div>
-        </div>
-        
-        <div style="position: absolute; bottom: 5px; left: 200px; background-color: #1c2541; padding: 4px 12px; border-radius: 20px; font-size: 11px; border: 1px solid #3a506b;">
-            Current Mass: <span style="color: #5bc0be; font-weight: bold;">{weight} Kg</span> / Max: 5000kg
-        </div>
-    </div>
+            <!-- Dynamic fluid container clipped bounds tracking scale -->
+            <svg x="200" y="120" width="200" height="170" viewBox="200 120 200 170">
+                <rect x="200" y="{fluid_y_axis}" width="200" height="300" fill="url(#fluid-grad)" opacity="0.85" />
+            </svg>
+        </g>
 
-    <!-- Footnotes Status Cards Alignment Row -->
-    <div style="width: 100%; display: flex; justify-content: space-around; margin-top: 15px; border-top: 1px solid #1c2541; padding-top: 15px; font-size: 12px; text-align: center;">
+        <!-- 4. MECHANICAL SHAFT MOUNT LAYER -->
+        <line x1="300" y1="90" x2="300" y2="240" stroke="#95a5a6" stroke-width="6" stroke-linecap="round" />
+
+        <!-- 5. DRIVEN MOTOR IMPELLER AGITATOR BLADES VECTOR -->
+        <g class="{('spinning-blade' if valve_open else '')}">
+            <!-- 3D Skew representation drawn symmetrically via vector coordinate nodes -->
+            <ellipse cx="300" cy="240" rx="60" ry="12" fill="#7f8c8d" stroke="#ecf0f1" stroke-width="1.5" />
+            <line x1="240" y1="240" x2="360" y2="240" stroke="#ffffff" stroke-width="2" opacity="0.5" />
+        </g>
+
+        <!-- 6. FLOATING LIVE HARDWARE PARAMETERS DATA WINDOW CARDS -->
+        <g transform="translate(420, 110)">
+            <rect width="140" height="75" rx="6" fill="#1c2541" stroke="#3a506b" stroke-width="1" />
+            <line x1="0" y1="0" x2="0" y2="75" stroke="{jacket_color}" stroke-width="4" />
+            <text x="12" y="22" fill="#8b9bb4" font-size="10" font-family="sans-serif">THERMAL JACKET</text>
+            <text x="12" y="44" fill="#ffffff" font-size="16" font-weight="bold" font-family="sans-serif">{temp:.1f} °C</text>
+            <text x="12" y="62" fill="{jacket_color}" font-size="11" font-family="sans-serif">● {jacket_status}</text>
+        </g>
+
+        <text x="300" y="325" fill="#8b9bb4" font-size="12" text-anchor="middle" font-family="sans-serif">
+            Current Mass: <tspan fill="#5bc0be" font-weight="bold">{weight} Kg</tspan> / 5000 Kg
+        </text>
+
+        <!-- Gradient fills filters definitions matrix nodes -->
+        <defs>
+            <linearGradient id="fluid-grad" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" stop-color="#1aa6b7" />
+                <stop offset="100%" stop-color="#116979" />
+            </linearGradient>
+        </defs>
+    </svg>
+
+    <!-- Bottom Alignment Status footnotes cards row footprint matrix -->
+    <div style="width: 100%; display: flex; justify-content: space-around; margin-top: 10px; border-top: 1px solid #1c2541; padding-top: 15px; font-size: 12px; text-align: center;">
         <div>
             <div style="color: #8b9bb4; font-size: 10px; margin-bottom: 2px;">Cooling Loop</div>
             <div style="font-weight: bold; color: #ffffff;">{('1.8 mL/m' if temp > target_pct else '0.0 mL/m')}</div>
@@ -114,31 +155,7 @@ canvas_html = f"""
             <div style="font-weight: bold; color: #2ecc71;">{assay} mg/L</div>
         </div>
     </div>
-
-    <!-- Active Inline Keyframe Rotation Scripts Driver Injection -->
-    <script>
-        var angle = 0;
-        var isRunning = {str(valve_open).lower()};
-        function spin() {{
-            if (isRunning) {{
-                angle = (angle + 8) % 360;
-                var el = document.getElementById('blade');
-                if (el) {{
-                    el.style.transform = 'rotateX(65deg) rotateZ(' + angle + 'deg)';
-                }}
-            }} else {{
-                var el = document.getElementById('blade');
-                if (el) {{
-                    el.style.transform = 'rotateX(65deg) rotateZ(0deg)';
-                }}
-            }}
-            requestAnimationFrame(spin);
-        }}
-        // Small timeout safely anchors DOM availability loading hooks loops execution setup
-        setTimeout(spin, 100);
-    </script>
 </div>
 """
 
-# Render dynamic compiled html module safely inside framework window screen workspace
-st.components.v1.html(canvas_html, height=450)
+st.components.v1.html(svg_layout, height=480)
